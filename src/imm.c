@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "imm.h"
+#include "../Timg/Timg.h"
 
 
 int main(int argc, char *argv[]){
