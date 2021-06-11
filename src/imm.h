@@ -39,4 +39,10 @@ int file_type(char *file);
 // verifica qual argumento foi passado e chama funcao correspondente. (futuramente retornar so a flag)
 int read_arg(char *argval[]);
 
+// funcoes de abertura do arquivo
+int open_txt();
+
+int open_bin();
+
+
 #endif
