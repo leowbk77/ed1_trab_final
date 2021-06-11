@@ -18,6 +18,11 @@
 #define CC 3
 #define LAB 4
 
+// tipos de arquivo
+#define BINARY 0
+#define TEXT 1
+#define INVALID_FORMAT -1
+
 /*
 *   FUNCOES 
 */
@@ -25,9 +30,6 @@
 /*
 *    Testes
 */
-
-// verifica se eh argumento valido na posicao argcn | devolve 1 se argumento. (funcao para teste do *argv[])
-int is_arg(int argcn, char *argval[]); 
 
 // verifica o tipo do arquivo | retorna 0 se binario; 1 se txt; -1 se invalido.
 int file_type(char *file);
