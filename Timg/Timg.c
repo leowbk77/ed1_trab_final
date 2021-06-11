@@ -4,8 +4,8 @@
 
 struct matrice_data
 {
-    int width; // largura
-    int height; // altura
+    int width; // largura | linhas
+    int height; // altura | colunas
     int *data; // dados
 };
 

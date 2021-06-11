@@ -20,7 +20,7 @@ typedef struct matrice_data img;
 // funcao que aloca espaco da imagem | w : largura   h : altura (px)
 img *create_img(int w, int h);
 
-// funcao que libera os espaco alocado para a imagem
+// funcao que libera o espaco alocado para a imagem
 int free_img(img *p_img);
 
 // funcao que seta o valor de determinado pixel

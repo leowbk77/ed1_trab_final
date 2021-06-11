@@ -16,6 +16,8 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
+
+
 int is_arg(int argn, char *argval[]){
 
     if(argval[argn][0] != '-'){
@@ -23,7 +25,23 @@ int is_arg(int argn, char *argval[]){
     }else{
         return 1;  
     }
+}
 
+int file_type(char *file){
+    
+    int file_ext = strlen(file) - 3;
+
+    if(!(strcmp(&file[file_ext], "imm"))){
+        return 0; // binario
+    }else if(!(strcmp(&file[file_ext], "txt"))){
+        return 1; // texto
+    }else return -1; // erro de formato invalido
+}
+
+int start_proc(int argcn, char *argval[]){
+    if(argcn < 3 || argcn > 5) return INVALID_ARGUMENT;
+
+    return call_proc(read_arg(argval), argcn, argval);
 }
 
 int read_arg(char *argval[]){
@@ -39,46 +57,37 @@ int read_arg(char *argval[]){
         indc++;
     }
 
+    return flag; // retornar a flag
+}
 
-    /*
-        SWITCH CASE QUE CHAMA AS FUNCOES DE PROCESSAMENTO 
-        (provavelmente é melhor colocar em uma funcao separada repassando o valor da flag | ex: call_proc(int flag, char *argval[]))
-    */
+int call_proc(int flag, int argcn, char *argval[]){
 
     switch(flag){
         case OPEN:
-            file_type(argval[2]);//verificacao se arquivo binario ou txt
+            //file_type(argval[2]);//verificacao se arquivo binario ou txt
             //funcao de abertura do arquivo
+            printf("comando: open");
             break;
         case CONVERT:
             //verifica os tipos dos arquivos
             //funcao que faz a conversao
+            printf("comando: convert");
             break;
         case SEGMENT:
             //funcao que faz o thresholding
+            printf("comando: segment");
             break;
         case CC:
             //funcao que detecta os componentes conexos
+            printf("comando: cc");
             break;
         case LAB:
             //funcao que mostra o caminho no labirinto
+            printf("comando: lab");
             break;
-
         default:
-            printf("Erro! comando não encontrado.");
-            return ELEM_NOT_FOUND;
+            return INVALID_ARGUMENT;
     }
-
-    return SUCCESS;
+    return SUCCESS; // temporario para testes
 }
 
-int file_type(char *file){
-    
-    int file_ext = strlen(file) - 3;
-
-    if(!(strcmp(&file[file_ext], "imm"))){
-        return 0; // binario
-    }else if(!(strcmp(&file[file_ext], "txt"))){
-        return 1; // texto
-    }else return -1; // erro de formato invalido
-}

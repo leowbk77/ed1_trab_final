@@ -8,7 +8,7 @@
 #define SUCCESS 0
 #define INVALID_NULL_POINTER -1
 #define OUT_OF_MEMORY -2
-#define OUT_OF_RANGE -3
+#define INVALID_ARGUMENT -3
 #define ELEM_NOT_FOUND -4
 
 // indices
@@ -36,8 +36,14 @@ int file_type(char *file);
 *    Processamento
 */
 
+// inicio das chamadas de funcao
+int start_proc(int argcn, char *argval[]);
+
 // verifica qual argumento foi passado e chama funcao correspondente. (futuramente retornar so a flag)
 int read_arg(char *argval[]);
+
+// funcao que chama as funcoes de arcordo com a flag
+int call_proc(int flag, int argcn, char *argval[]);
 
 // funcoes de abertura do arquivo
 int open_txt();
