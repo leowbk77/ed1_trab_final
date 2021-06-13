@@ -42,7 +42,7 @@ int file_type(char *file);
 int start_proc(int argcn, char *argval[]);
 
 // verifica qual argumento foi passado e chama funcao correspondente. (futuramente retornar so a flag)
-int read_arg(char *argval[]);
+int read_arg(char *argval);
 
 // funcao que chama as funcoes de arcordo com a flag
 int call_proc(int flag, int argcn, char *argval[]);

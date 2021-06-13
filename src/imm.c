@@ -19,17 +19,17 @@ int file_type(char *file){
 int start_proc(int argcn, char *argval[]){
     if(argcn < 3 || argcn > 5) return INVALID_ARGUMENT;
 
-    return call_proc(read_arg(argval), argcn, argval);
+    return call_proc(read_arg(argval[1]), argcn, argval);
 }
 
-int read_arg(char *argval[]){
+int read_arg(char *argval){
     char *valid[5] = {"-open\0","-convert\0","-segment\0","-cc\0","-lab\0"};
 
     int indc = 0;
     int flag = -1; // flag inicia em -1; evita tentar dar open sempre; retorna INVALID_ARGUMENT
 
     while((indc < 5) && (flag == -1)){
-        if(!(strcmp(argval[1], valid[indc]))){
+        if(!(strcmp(argval, valid[indc]))){
             flag = indc;
         }
         indc++;
