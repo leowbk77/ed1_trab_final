@@ -93,21 +93,14 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
 }
 
 int write_txt(img *img, FILE *fp) {
-    int col = 0, row = 0;
     int pixel;
 
-    while(row < img -> height) {
-        while (col < img -> width) {
-            fscanf(fp, "%d", &pixel);
-
-            if(pixel != ' ' && pixel != '\t') {
-                set_pxl(img, row, col, pixel);
-            }
-            col++;
-        }
-        row++;
-        col = 0;
-    }
+	for(int i = 0; i < img->height; i++){
+		for(int j = 0; j < img->width; j++){
+			fscanf(fp, "%d", &pixel);
+			pxl_set(img, i, j, pixel);	
+		}
+	}
 
     return SUCCESS;
 }

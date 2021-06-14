@@ -31,6 +31,9 @@ int is_arg(int argcn, char *argval[]);
 // verifica o tipo do arquivo | retorna 0 se binario; 1 se txt; -1 se invalido.
 int file_type(char *file);
 
+// funcoes de abertura do arquivo
+int open_txt(char *filepath);
+
 /*
 *    Processamento
 */
@@ -154,6 +157,9 @@ int call_proc(int flag, int argcn, char *argval[]){
 
     switch(flag){
         case OPEN:
+            if(file_type(argval[2])){ // se for arquivo .txt abre a imagem
+                return open_txt(argval[2]);
+            }
             //file_type(argval[2]);//verificacao se arquivo binario ou txt
             ////funcao de abertura do arquivo
             printf("comando: open");
@@ -204,24 +210,46 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
     *nrow = ++row;
     *ncolumn = col;
 
+    rewind(fp); // retorna o ponteiro do arquivo para o inicio
     return SUCCESS;
 }
 
 int write_txt(img *img, FILE *fp) {
-    int col = 0, row = 0;
     int pixel;
 
-    while(row < img -> height) {
-        while (col < img -> width) {
-            fscanf(fp, "%d", &pixel);
-            
-            if(pixel != ' ' && pixel != '\t') {
-                pxl_set(img, row, col, pixel);
-            }
-            col++;
-        }
-        row++;
+	for(int i = 0; i < img->height; i++){
+		for(int j = 0; j < img->width; j++){
+			fscanf(fp, "%d", &pixel);
+			pxl_set(img, i, j, pixel);	
+		}
+	}
+
+    rewind(fp); // retorna o ponteiro do arquivo para o inicio
+    return SUCCESS;
+}
+
+int open_txt(char *filepath){
+
+    img *p_img = NULL;
+    FILE *image = NULL;
+
+    image = fopen(filepath, "r"); // abre o arquivo de imagem
+    if(image == NULL){
+        return INVALID_ARGUMENT;
     }
+
+    int rows = 0;
+    int columns = 0;
+
+    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+
+    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)t
+    write_txt(p_img, image); // coloca os pixels na memoria
+
+    fclose(image); // fecha o arquivo
+
+    img_print(p_img); // exibe os pixels;
+    free_img(p_img); // libera a imagem da memoria
 
     return SUCCESS;
 }
@@ -258,35 +286,32 @@ int main(int argc, char *argv[]){
     printf("\nteste : %d\n", teste);
     // FIM TESTE DE ARGUMENTOS
     
+    // TESTE DAS FUNCOES DE LEITURA DO ARQUIVO 
+    /*
     FILE *fp;
-
-    fp = fopen("./imagens/teste.txt", "r");
+    fp = fopen(argv[1], "r");
     if (fp == NULL) {
         printf("[ERRO]\n");
     } else if (fp != NULL) {
         printf("Arquivo aberto com sucesso.\n");
     }
-
+	
     int col = 0, row = 0;
     nrow_ncol(fp, &row, &col);
-
+	rewind(fp);
+	
     printf("\nNúmero de linhas:%d\nNúmero de colunas:%d\n", row, col);
 
     p = create_img(col, row);
-
-    fclose(fp);
-    fp = fopen("./imagens/teste.txt", "r");
-    if (fp == NULL) {
-        printf("[ERRO]\n");
-    } else if (fp != NULL) {
-        printf("Arquivo aberto com sucesso.\n");
-    }
-
+	
     write_txt(p, fp);
-
     img_print(p);
-    
+   
     fclose(fp);
     free_img(p);
+    */
+    // FIM TESTE DE LEITURA
+
+	
     return 0;
 }

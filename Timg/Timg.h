@@ -29,12 +29,14 @@ int set_pxl(img *p_img, int line, int column, int pixel);
 // funcao que devolve o valor de determinado pixel
 int get_pxl(img *p_img, int line, int column, int *pixel);
 
-// funcao que printa a imagem (para testes)
+// funcao que printa a imagem
 void img_print(img *p_img);
 
-// funcoes de escrever do arquivo para a memoria
+// funcoes que escrevem do arquivo para a memoria
+// escreve do arquivo texto
 int write_txt(img *img, FILE *fp);
 
+// escreve do arquivo binario
 int write_bin(img *img, FILE *fp);
 
 // funcao que retorno o numero de linhas e colunas de uma imagem txt

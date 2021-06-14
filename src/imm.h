@@ -48,8 +48,10 @@ int read_arg(char *argval);
 int call_proc(int flag, int argcn, char *argval[]);
 
 // funcoes de abertura do arquivo
-int open_txt();
+// abre a imagem em formato .txt
+int open_txt(char *filepath);
 
+// abre a imagem em formato binario
 int open_bin();
 
 #endif

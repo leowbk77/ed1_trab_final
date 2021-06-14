@@ -67,3 +67,29 @@ int call_proc(int flag, int argcn, char *argval[]){
     }
     return SUCCESS; // temporario para testes
 }
+
+int open_txt(char *filepath){
+
+    img *p_img = NULL;
+    FILE *image = NULL;
+
+    image = fopen(filepath, "r"); // abre o arquivo de imagem
+    if(image == NULL){
+        return INVALID_ARGUMENT;
+    }
+
+    int rows = 0;
+    int columns = 0;
+
+    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+
+    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)t
+    write_txt(p_img, image); // coloca os pixels na memoria
+
+    fclose(image); // fecha o arquivo
+
+    img_print(p_img); // exibe os pixels;
+    free_img(p_img); // libera a imagem da memoria
+
+    return SUCCESS;
+}
