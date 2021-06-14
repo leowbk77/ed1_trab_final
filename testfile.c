@@ -95,8 +95,8 @@ void img_print(img *p_img){
     
     int pos = 0;
     
-    for(int i = 0; i < p_img->width; i++){
-        for(int j = 0; j < p_img->height; j++){
+    for(int i = 0; i < p_img->height; i++){
+        for(int j = 0; j < p_img->width; j++){
             pos = i * p_img->width + j;
             printf("%d ", p_img->data[pos]);
         }
@@ -181,6 +181,50 @@ int call_proc(int flag, int argcn, char *argval[]){
     return SUCCESS; // temporario para testes
 }
 
+int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
+    if (fp == NULL) {
+        return INVALID_NULL_POINTER;
+    }
+
+    int col = 0;
+    int row = 0;
+    char c;
+
+    while (!feof(fp)) {
+        c = fgetc(fp);
+        if (c == '\n') {
+            row++;
+        }
+
+        if (row == 0 && (c == ' ' || c == '\t')) {
+            col++;
+        } 
+    }
+    
+    *nrow = ++row;
+    *ncolumn = col;
+
+    return SUCCESS;
+}
+
+int write_txt(img *img, FILE *fp) {
+    int col = 0, row = 0;
+    int pixel;
+
+    while(row < img -> height) {
+        while (col < img -> width) {
+            fscanf(fp, "%d", &pixel);
+            
+            if(pixel != ' ' && pixel != '\t') {
+                pxl_set(img, row, col, pixel);
+            }
+            col++;
+        }
+        row++;
+    }
+
+    return SUCCESS;
+}
 
 int main(int argc, char *argv[]){
     
@@ -214,6 +258,35 @@ int main(int argc, char *argv[]){
     printf("\nteste : %d\n", teste);
     // FIM TESTE DE ARGUMENTOS
     
+    FILE *fp;
+
+    fp = fopen("./imagens/teste.txt", "r");
+    if (fp == NULL) {
+        printf("[ERRO]\n");
+    } else if (fp != NULL) {
+        printf("Arquivo aberto com sucesso.\n");
+    }
+
+    int col = 0, row = 0;
+    nrow_ncol(fp, &row, &col);
+
+    printf("\nNúmero de linhas:%d\nNúmero de colunas:%d\n", row, col);
+
+    p = create_img(col, row);
+
+    fclose(fp);
+    fp = fopen("./imagens/teste.txt", "r");
+    if (fp == NULL) {
+        printf("[ERRO]\n");
+    } else if (fp != NULL) {
+        printf("Arquivo aberto com sucesso.\n");
+    }
+
+    write_txt(p, fp);
+
+    img_print(p);
     
+    fclose(fp);
+    free_img(p);
     return 0;
 }

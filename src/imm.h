@@ -52,5 +52,4 @@ int open_txt();
 
 int open_bin();
 
-
 #endif

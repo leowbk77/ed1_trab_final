@@ -4,8 +4,8 @@
 
 struct matrice_data
 {
-    int width; // largura | linhas
-    int height; // altura | colunas
+    int width; // largura | colunas
+    int height; // altura | linhas
     int *data; // dados
 };
 
@@ -64,4 +64,50 @@ void img_print(img *p_img){
         }
         printf("\n");
     }
+}
+
+int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
+    if (fp == NULL) {
+        return INVALID_NULL_POINTER;
+    }
+
+    int col = 0;
+    int row = 0;
+    char c;
+
+    while (!feof(fp)) {
+        c = fgetc(fp);
+        if (c == '\n') {
+            row++;
+        }
+
+        if (row == 0 && (c == ' ' || c == '\t')) {
+            col++;
+        } 
+    }
+    
+    *nrow = ++row;
+    *ncolumn = col;
+
+    return SUCCESS;
+}
+
+int write_txt(img *img, FILE *fp) {
+    int col = 0, row = 0;
+    int pixel;
+
+    while(row < img -> height) {
+        while (col < img -> width) {
+            fscanf(fp, "%d", &pixel);
+
+            if(pixel != ' ' && pixel != '\t') {
+                set_pxl(img, row, col, pixel);
+            }
+            col++;
+        }
+        row++;
+        col = 0;
+    }
+
+    return SUCCESS;
 }
