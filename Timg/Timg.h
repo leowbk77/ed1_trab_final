@@ -33,11 +33,11 @@ int get_pxl(img *p_img, int line, int column, int *pixel);
 void img_print(img *p_img);
 
 // funcoes que escrevem do arquivo para a memoria
-// escreve do arquivo texto
-int write_txt(img *img, FILE *fp);
+// le o arquivo .txt e armazena na memoria
+int read_txt(img *img, FILE *fp);
 
-// escreve do arquivo binario
-int write_bin(img *img, FILE *fp);
+// escreve o arquivo binario | width : largura   height : altura 
+int write_bin(img *img, FILE *fp, int width, int height);
 
 // funcao que retorno o numero de linhas e colunas de uma imagem txt
 int nrow_ncol(FILE *fp, int *nrow, int *ncolumn);

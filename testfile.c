@@ -208,13 +208,13 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
     }
     
     *nrow = ++row;
-    *ncolumn = col;
+    *ncolumn = ++col; // em alguns casos necessario ser ++col (corrigir)
 
     rewind(fp); // retorna o ponteiro do arquivo para o inicio
     return SUCCESS;
 }
 
-int write_txt(img *img, FILE *fp) {
+int read_txt(img *img, FILE *fp) {
     int pixel;
 
 	for(int i = 0; i < img->height; i++){
@@ -225,6 +225,16 @@ int write_txt(img *img, FILE *fp) {
 	}
 
     rewind(fp); // retorna o ponteiro do arquivo para o inicio
+    return SUCCESS;
+}
+
+int write_bin(img *img, FILE *fp, int width, int height){
+    fwrite(&width, sizeof(int), 1, fp); // escreve a largura
+    fwrite(&height, sizeof(int), 1, fp); // escreve a altura
+
+    fwrite(img->data, sizeof(int), width * height, fp); // escreve o vetor de dados
+
+    rewind(fp);
     return SUCCESS;
 }
 
@@ -244,7 +254,7 @@ int open_txt(char *filepath){
     nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
 
     p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)t
-    write_txt(p_img, image); // coloca os pixels na memoria
+    read_txt(p_img, image); // coloca os pixels na memoria
 
     fclose(image); // fecha o arquivo
 
@@ -254,9 +264,49 @@ int open_txt(char *filepath){
     return SUCCESS;
 }
 
+int convert(char *filepath, char *resultfile){
+
+    img *p_img = NULL;
+    FILE *image = NULL;
+
+    image = fopen(filepath, "r"); // abre a imagem em formato .txt
+    if(image == NULL) return INVALID_ARGUMENT;
+
+    int rows = 0;
+    int columns = 0;
+
+    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+    p_img = create_img(rows, columns); // aloca o espaco da imagem na memoria
+    read_txt(p_img, image); // coloca os pixels na memoria (já em bin)
+
+
+    // debug
+    printf("\nIMAGEM DE ENTRADA:\n");
+    printf("W: %d\tH: %d\n", columns, rows);
+    img_print(p_img);
+    printf("\n");
+    // debug
+
+
+
+    fclose(image); // fecha o arquivo .txt
+
+    image = fopen(resultfile, "wb"); // escreve/sobrescreve o novo arquivo binario
+    if(image == NULL) return INVALID_ARGUMENT;
+
+    write_bin(p_img, image, columns, rows); // coloca os pixels na memoria para o arquivo
+
+    fclose(image); // fecha o arquivo
+
+    free_img(p_img); // libera a memoria ocupada
+
+    return SUCCESS;
+}
+
 int main(int argc, char *argv[]){
-    
+    int teste = 0;
     // TESTE DO TAD IMAGEM
+    /*
     img *p = NULL;
     
     p = create_img(2,2);
@@ -276,12 +326,13 @@ int main(int argc, char *argv[]){
     if(isfree == 0){
         printf("tudo certo com a imagem, fim de exec\n");
     }
+    */
     // FIM TAD IMAGEM
     
     // TESTE DE ARGUMENTOS
     printf("%d é o numero de argumentos\n", argc);
     
-    int teste = start_proc(argc, argv);
+    teste = start_proc(argc, argv);
     
     printf("\nteste : %d\n", teste);
     // FIM TESTE DE ARGUMENTOS
@@ -312,6 +363,33 @@ int main(int argc, char *argv[]){
     */
     // FIM TESTE DE LEITURA
 
+    // TESTE DA FUNCAO DE CONVERSAO TXT BIN
+    teste = convert(argv[1], argv[2]);
+    printf("\nteste de conversao: %d\n", teste);
+    // FIM TESTE CONVERSAO
 	
     return 0;
 }
+
+/* IMAGENS PARA TESTE
+
+5 x 3
+76 101 111 255 255
+255 87 98 75 255
+255 55 55 255 255
+
+3 x 3
+0 0 1
+1 0 0
+0 1 0
+
+3 x 2
+1 0 1
+0 1 0
+
+5 x 3
+1 0 1 0 1
+0 1 0 1 0
+1 0 1 0 1
+
+*/

@@ -74,22 +74,54 @@ int open_txt(char *filepath){
     FILE *image = NULL;
 
     image = fopen(filepath, "r"); // abre o arquivo de imagem
-    if(image == NULL){
-        return INVALID_ARGUMENT;
-    }
+    if(image == NULL) return INVALID_ARGUMENT;
 
     int rows = 0;
     int columns = 0;
 
     nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
 
-    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)t
-    write_txt(p_img, image); // coloca os pixels na memoria
+    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)
+    read_txt(p_img, image); // coloca os pixels na memoria (em bin)
 
     fclose(image); // fecha o arquivo
 
     img_print(p_img); // exibe os pixels;
     free_img(p_img); // libera a imagem da memoria
+
+    return SUCCESS;
+}
+
+int open_bin(char *filepath){
+
+    return SUCCESS;
+}
+
+int convert(char *filepath, char *resultfile){
+
+    img *p_img = NULL;
+    FILE *image = NULL;
+
+    image = fopen(filepath, "r"); // abre a imagem em formato .txt
+    if(image == NULL) return INVALID_ARGUMENT;
+
+    int rows = 0;
+    int columns = 0;
+
+    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+    p_img = create_img(rows, columns); // aloca o espaco da imagem na memoria
+    read_txt(p_img, image); // coloca os pixels na memoria (já em bin)
+
+    fclose(image); // fecha o arquivo .txt
+
+    image = fopen(resultfile, "wb"); // escreve/sobrescreve o novo arquivo binario
+    if(image == NULL) return INVALID_ARGUMENT;
+
+    write_bin(p_img, image, columns, rows); // coloca os pixels na memoria para o arquivo
+
+    fclose(image); // fecha o arquivo
+
+    free_img(p_img); // libera a memoria ocupada
 
     return SUCCESS;
 }

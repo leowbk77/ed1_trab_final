@@ -5,11 +5,7 @@
 *    DEFINICOES
 */
 
-#define SUCCESS 0
-#define INVALID_NULL_POINTER -1
-#define OUT_OF_MEMORY -2
 #define INVALID_ARGUMENT -3
-#define ELEM_NOT_FOUND -4
 
 // indices
 #define OPEN 0
@@ -52,6 +48,9 @@ int call_proc(int flag, int argcn, char *argval[]);
 int open_txt(char *filepath);
 
 // abre a imagem em formato binario
-int open_bin();
+int open_bin(char *filepath);
+
+// converte a imagem de .txt para .mmm | filepath : caminho do arquivo .txt  resultfile : o arquivo resultado a ser gerado
+int convert(char *filepath, char *resultfile);
 
 #endif

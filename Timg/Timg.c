@@ -67,10 +67,6 @@ void img_print(img *p_img){
 }
 
 int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
-    if (fp == NULL) {
-        return INVALID_NULL_POINTER;
-    }
-
     int col = 0;
     int row = 0;
     char c;
@@ -87,12 +83,13 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
     }
     
     *nrow = ++row;
-    *ncolumn = col;
+    *ncolumn = col; // em alguns casos necessario ser ++col (corrigir)
 
+    rewind(fp);
     return SUCCESS;
 }
 
-int write_txt(img *img, FILE *fp) {
+int read_txt(img *img, FILE *fp) {
     int pixel;
 
 	for(int i = 0; i < img->height; i++){
@@ -102,5 +99,22 @@ int write_txt(img *img, FILE *fp) {
 		}
 	}
 
+    rewind(fp);
     return SUCCESS;
 }
+
+int write_bin(img *img, FILE *fp, int width, int height){
+    fwrite(&width, sizeof(int), 1, fp); // escreve a largura
+    fwrite(&height, sizeof(int), 1, fp); // escreve a altura
+
+    fwrite(img->data, sizeof(int), width * height, fp); // escreve o vetor de dados
+
+    rewind(fp);
+    return SUCCESS;
+}
+
+/* ARQUIVO BIN (.IMM)
+    4 BYTES (INT)
+    4 BYTES (INT)
+    IMG->DATA (W*H * INT)
+*/
