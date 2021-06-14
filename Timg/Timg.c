@@ -12,7 +12,7 @@ struct matrice_data
 img *create_img(int w, int h){
     img *p_img = NULL;
 
-    p_img = malloc(sizof(img));
+    p_img = malloc(sizeof(img));
 
     if(p_img != NULL){
         p_img->width = w;
