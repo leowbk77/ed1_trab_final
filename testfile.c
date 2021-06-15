@@ -85,7 +85,7 @@ int free_img(img *p_img){
     return SUCCESS;
 }
 
-int pxl_set(img *p_img, int line, int column, int pixel){
+int set_pxl(img *p_img, int line, int column, int pixel){
     if(p_img == NULL) return INVALID_NULL_POINTER;
 
     int pos = line * p_img->width + column;
@@ -220,7 +220,7 @@ int read_txt(img *img, FILE *fp) {
 	for(int i = 0; i < img->height; i++){
 		for(int j = 0; j < img->width; j++){
 			fscanf(fp, "%d", &pixel);
-			pxl_set(img, i, j, pixel);	
+			set_pxl(img, i, j, pixel);
 		}
 	}
 
@@ -333,10 +333,10 @@ int main(int argc, char *argv[]){
         return 1;
     }
     
-    pxl_set(p, 0, 0, 1);
-    pxl_set(p, 0, 1, 0);
-    pxl_set(p, 1, 0, 0);
-    pxl_set(p, 1, 1, 1);
+    set_pxl(p, 0, 0, 1);
+    set_pxl(p, 0, 1, 0);
+    set_pxl(p, 1, 0, 0);
+    set_pxl(p, 1, 1, 1);
     
     img_print(p);
     
@@ -386,9 +386,11 @@ int main(int argc, char *argv[]){
     // printf("\nteste de conversao: %d\n", teste);
     // FIM TESTE CONVERSAO
 
+    // TESTE DO OPEN_BIN
     teste = open_bin(argv[1]);
     printf("\nteste de open_bin: %d\n", teste);
-	
+	// FIM TESTE DO OPEN_BIN
+
     return 0;
 }
 

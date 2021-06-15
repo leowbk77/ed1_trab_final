@@ -53,4 +53,7 @@ int open_bin(char *filepath);
 // converte a imagem de .txt para .mmm | filepath : caminho do arquivo .txt  resultfile : o arquivo resultado a ser gerado
 int convert(char *filepath, char *resultfile);
 
+// faz a limiarização da imagem
+int segment(char *thr, char *filepath, char *resultfile);
+
 #endif

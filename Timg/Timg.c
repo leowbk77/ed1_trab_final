@@ -95,7 +95,7 @@ int read_txt(img *img, FILE *fp) {
 	for(int i = 0; i < img->height; i++){
 		for(int j = 0; j < img->width; j++){
 			fscanf(fp, "%d", &pixel);
-			pxl_set(img, i, j, pixel);	
+			set_pxl(img, i, j, pixel);	
 		}
 	}
 
@@ -118,3 +118,46 @@ int write_bin(img *img, FILE *fp, int width, int height){
     4 BYTES (INT)
     IMG->DATA (W*H * INT)
 */
+
+img *read_bin(FILE *fp){
+
+    int largura = 0;
+    int altura= 0;
+    int pixel = 0;
+    img *img = NULL;
+
+    fread(&largura, sizeof(int), 1, fp);
+    fread(&altura, sizeof(int), 1, fp);
+
+    img = create_img(largura, altura);
+    if(img == NULL) return OUT_OF_MEMORY;
+
+	for(int i = 0; i < img->height; i++){
+		for(int j = 0; j < img->width; j++){
+            fread(&pixel, sizeof(int), 1, fp);
+			set_pxl(img, i, j, pixel);	
+		}
+	}
+
+    rewind(fp);
+    return img;
+}
+
+int img_thr(img *p_img, int thr){
+
+    int pos = 0;
+
+    for(int i = 0; i < p_img->height; i++){
+        for(int j = 0; j < p_img->width; j++){
+            pos = i * p_img -> width + j;
+
+            if(p_img->data[pos] > thr){
+                p_img->data[pos] = 1;
+            }else{
+                p_img->data[pos] = 0;
+            }
+        }
+    }
+
+    return SUCCESS;
+}

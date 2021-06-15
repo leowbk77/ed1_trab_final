@@ -36,6 +36,12 @@ void img_print(img *p_img);
 // le o arquivo .txt e armazena na memoria
 int read_txt(img *img, FILE *fp);
 
+// le o arquivo .imm e armazena na memoria | devolve o ponteiro pro TAD imagem na memoria
+img *read_bin(FILE *fp);
+
+// funcao que faz o thr
+int img_thr(img *p_img, int thr);
+
 // escreve o arquivo binario | width : largura   height : altura 
 int write_bin(img *img, FILE *fp, int width, int height);
 

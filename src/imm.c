@@ -144,3 +144,35 @@ int convert(char *filepath, char *resultfile){
 
     return SUCCESS;
 }
+
+int segment(char *thr, char *filepath, char *resultfile){
+    int thr_int = 0;
+    int largura = 0;
+    int altura = 0;
+
+    sscanf(thr, "%d", &thr_int); // pega o valor do thr passado por argumento
+
+    FILE *fp = NULL;
+    img *p_img = NULL;
+
+    fp = fopen(filepath, "rb");
+    if(fp == NULL) return INVALID_NULL_POINTER;
+
+    p_img = read_bin(fp);
+    if(p_img == NULL) return INVALID_NULL_POINTER;
+
+    fread(&largura, sizeof(int), 1, fp);
+    fread(&altura, sizeof(int), 1, fp);
+    rewind(fp);
+
+    fclose(fp);
+
+    fp = fopen(resultfile, "wb");
+
+    img_thr(p_img, thr_int);
+    write_bin(p_img, fp, largura, altura);
+    
+    fclose(fp);
+
+    return SUCCESS;
+}
