@@ -5,7 +5,8 @@
 *    DEFINICOES
 */
 
-#define INVALID_ARGUMENT -3
+#define INVALID_ARG_COUNT -5
+#define INVALID_ARGUMENT -6
 
 // indices
 #define OPEN 0
@@ -34,20 +35,21 @@ int file_type(char *file);
 *    Processamento
 */
 
-// inicio das chamadas de funcao
+// inicio das chamadas de funcao | funcao "raiz" do programa
 int start_proc(int argcn, char *argval[]);
 
-// verifica qual argumento foi passado e chama funcao correspondente. (futuramente retornar so a flag)
+// verifica qual argumento foi passado e retorna a flag correspondente de acordo com a tabela de indices
 int read_arg(char *argval);
 
 // funcao que chama as funcoes de arcordo com a flag
 int call_proc(int flag, int argcn, char *argval[]);
 
 // funcoes de abertura do arquivo
-// abre a imagem em formato .txt
+// funcao de abertura
+int open(int filetype, char *filepath);
+// exibe a imagem em formato .txt
 int open_txt(char *filepath);
-
-// abre a imagem em formato binario
+// exibe a imagem em formato binario
 int open_bin(char *filepath);
 
 // converte a imagem de .txt para .mmm | filepath : caminho do arquivo .txt  resultfile : o arquivo resultado a ser gerado

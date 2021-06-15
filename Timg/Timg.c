@@ -161,3 +161,12 @@ int img_thr(img *p_img, int thr){
 
     return SUCCESS;
 }
+
+int resolution(img *p_img, int *width, int *height){
+    if(p_img == NULL) return INVALID_NULL_POINTER;
+
+    *width = p_img->width;
+    *height = p_img->height;
+    
+    return SUCCESS;
+}

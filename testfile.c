@@ -377,7 +377,7 @@ int segment(char *thr, char *filepath, char *resultfile){
     fp = fopen(filepath, "rb");
     if(fp == NULL) return INVALID_NULL_POINTER;
 
-    p_img = read_bin(fp);
+    p_img = read_bin(fp); 
     if(p_img == NULL) return INVALID_NULL_POINTER;
 
     fread(&largura, sizeof(int), 1, fp);

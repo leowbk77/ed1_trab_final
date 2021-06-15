@@ -41,31 +41,62 @@ int call_proc(int flag, int argcn, char *argval[]){
 
     switch(flag){
         case OPEN:
-            //file_type(argval[2]);//verificacao se arquivo binario ou txt
-            //funcao de abertura do arquivo
-            printf("comando: open");
+
+            if(argcn != 3) return INVALID_ARG_COUNT;
+            return open(file_type(argval[2]), argval[2]);
             break;
+
         case CONVERT:
-            //verifica os tipos dos arquivos
-            //funcao que faz a conversao
-            printf("comando: convert");
+
+            if(argcn != 4) return INVALID_ARG_COUNT;
+            // primeiro argumento [2] : txt && segundo argumento [3] : bin 
+            if((file_type(argval[2]) == 1) && (file_type(argval[3]) == 0)){
+                return convert(argval[2], argval[3]); // converte .txt para bin
+            }else{
+                return INVALID_ARGUMENT;
+            }
             break;
+
         case SEGMENT:
-            //funcao que faz o thresholding
-            printf("comando: segment");
+
+            if(argcn != 5) return INVALID_ARG_COUNT;
+            // arquivo de entrada [3] : bin
+            if(file_type(argval[3]) == 0){
+                return segment(argval[2], argval[3], argval[4]); // limiariza a imagem
+            }else{
+                return INVALID_ARGUMENT;
+            }
             break;
+
         case CC:
+
             //funcao que detecta os componentes conexos
             printf("comando: cc");
             break;
+
         case LAB:
+
             //funcao que mostra o caminho no labirinto
             printf("comando: lab");
             break;
+
         default:
+        
+            printf("-6: Comando não encontrado.\n");
             return INVALID_ARGUMENT;
     }
     return SUCCESS; // temporario para testes
+}
+
+int open(int filetype, char *filepath){
+    // verifica o tipo de entrada : txt ou bin
+    if(filetype){
+        return open_txt(filepath); // abre arquivo texto e exibe
+    }else if(filetype == 0){
+        return open_bin(filepath); // abre arquivo bin e exibe
+    }else{
+        return INVALID_ARGUMENT;
+    }
 }
 
 int open_txt(char *filepath){
@@ -81,8 +112,7 @@ int open_txt(char *filepath){
     while (!feof(image)) {
         c = fgetc(image);
 
-        if (c != EOF) 
-            printf("%c", c);
+        if (c != EOF) printf("%c", c);
     }
 
     fclose(image); // fecha o arquivo
@@ -100,7 +130,7 @@ int open_bin(char *filepath){
 
     int inteiro, largura, altura;
     
-    fread(&largura, sizeof(int), 1, image);
+    fread(&largura, sizeof(int), 1, image); // pega os valores de largura e altura
     fread(&altura, sizeof(int), 1, image);
 
     for(int i = 0; i < altura; i++) {
@@ -117,7 +147,6 @@ int open_bin(char *filepath){
 }
 
 int convert(char *filepath, char *resultfile){
-
     img *p_img = NULL;
     FILE *image = NULL;
 
@@ -152,26 +181,23 @@ int segment(char *thr, char *filepath, char *resultfile){
 
     sscanf(thr, "%d", &thr_int); // pega o valor do thr passado por argumento
 
-    FILE *fp = NULL;
+    FILE *fp = NULL; 
     img *p_img = NULL;
 
-    fp = fopen(filepath, "rb");
+    fp = fopen(filepath, "rb"); // abre o arquivo binario
     if(fp == NULL) return INVALID_NULL_POINTER;
 
-    p_img = read_bin(fp);
+    p_img = read_bin(fp); // armazena na memoria as informacoes da imagem
     if(p_img == NULL) return INVALID_NULL_POINTER;
 
-    fread(&largura, sizeof(int), 1, fp);
-    fread(&altura, sizeof(int), 1, fp);
-    rewind(fp);
-
+    resolution(p_img, &largura, &altura); // pega a resolucao da imagem
     fclose(fp);
 
-    fp = fopen(resultfile, "wb");
+    fp = fopen(resultfile, "wb"); // cria o novo arquivo
+    if(fp == NULL) return INVALID_NULL_POINTER;
 
-    img_thr(p_img, thr_int);
-    write_bin(p_img, fp, largura, altura);
-    
+    img_thr(p_img, thr_int); // faz o thresholding da imagem
+    write_bin(p_img, fp, largura, altura); // escreve o novo arquivo
     fclose(fp);
 
     return SUCCESS;

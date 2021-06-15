@@ -39,7 +39,7 @@ int read_txt(img *img, FILE *fp);
 // le o arquivo .imm e armazena na memoria | devolve o ponteiro pro TAD imagem na memoria
 img *read_bin(FILE *fp);
 
-// funcao que faz o thr
+// funcao que altera a imagem de acordo com o valor do thr
 int img_thr(img *p_img, int thr);
 
 // escreve o arquivo binario | width : largura   height : altura 
@@ -47,5 +47,8 @@ int write_bin(img *img, FILE *fp, int width, int height);
 
 // funcao que retorno o numero de linhas e colunas de uma imagem txt
 int nrow_ncol(FILE *fp, int *nrow, int *ncolumn);
+
+// funcao que retorna a largura e altura da imagem
+int resolution(img *p_img, int *width, int *height);
 
 #endif
