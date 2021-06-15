@@ -57,9 +57,9 @@ int get_pxl(img *p_img, int line, int column, int *pixel){
 void img_print(img *p_img){
     int pos = 0;
     
-    for(int i = 0; i < p_img->width; i++){
-        for(int j = 0; j < p_img->height; j++){
-            pos = i * p_img->width + j;
+    for(int i = 0; i < p_img->height; i++){
+        for(int j = 0; j < p_img->width; j++){
+            pos = i * p_img -> width + j;
             printf("%d ", p_img->data[pos]);
         }
         printf("\n");

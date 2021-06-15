@@ -239,8 +239,6 @@ int write_bin(img *img, FILE *fp, int width, int height){
 }
 
 int open_txt(char *filepath){
-
-    img *p_img = NULL;
     FILE *image = NULL;
 
     image = fopen(filepath, "r"); // abre o arquivo de imagem
@@ -248,24 +246,21 @@ int open_txt(char *filepath){
         return INVALID_ARGUMENT;
     }
 
-    int rows = 0;
-    int columns = 0;
+    char c;
 
-    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+    while (!feof(image)) {
+        c = fgetc(image);
 
-    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)t
-    read_txt(p_img, image); // coloca os pixels na memoria
+        if (c != EOF) 
+            printf("%c", c);
+    }
 
     fclose(image); // fecha o arquivo
-
-    img_print(p_img); // exibe os pixels;
-    free_img(p_img); // libera a imagem da memoria
 
     return SUCCESS;
 }
 
 int convert(char *filepath, char *resultfile){
-
     img *p_img = NULL;
     FILE *image = NULL;
 
@@ -276,9 +271,8 @@ int convert(char *filepath, char *resultfile){
     int columns = 0;
 
     nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
-    p_img = create_img(rows, columns); // aloca o espaco da imagem na memoria
+    p_img = create_img(columns, rows); // aloca o espaco da imagem na memoria
     read_txt(p_img, image); // coloca os pixels na memoria (já em bin)
-
 
     // debug
     printf("\nIMAGEM DE ENTRADA:\n");
@@ -286,8 +280,6 @@ int convert(char *filepath, char *resultfile){
     img_print(p_img);
     printf("\n");
     // debug
-
-
 
     fclose(image); // fecha o arquivo .txt
 
@@ -299,6 +291,32 @@ int convert(char *filepath, char *resultfile){
     fclose(image); // fecha o arquivo
 
     free_img(p_img); // libera a memoria ocupada
+
+    return SUCCESS;
+}
+
+int open_bin(char *filepath){
+    FILE *image = NULL;
+
+    image = fopen(filepath, "rb"); // abre o arquivo de imagem
+    if(image == NULL){
+        return INVALID_ARGUMENT;
+    }
+
+    int inteiro, largura, altura;
+    
+    fread(&largura, sizeof(int), 1, image);
+    fread(&altura, sizeof(int), 1, image);
+
+    for(int i = 0; i < altura; i++) {
+        for(int j = 0; j < largura; j++) {
+            fread(&inteiro, sizeof(int), 1, image);
+            printf("%d ", inteiro);
+        }
+        printf("\n");
+    }
+
+    fclose(image); // fecha o arquivo
 
     return SUCCESS;
 }
@@ -364,9 +382,12 @@ int main(int argc, char *argv[]){
     // FIM TESTE DE LEITURA
 
     // TESTE DA FUNCAO DE CONVERSAO TXT BIN
-    teste = convert(argv[1], argv[2]);
-    printf("\nteste de conversao: %d\n", teste);
+    // teste = convert(argv[1], argv[2]);
+    // printf("\nteste de conversao: %d\n", teste);
     // FIM TESTE CONVERSAO
+
+    teste = open_bin(argv[1]);
+    printf("\nteste de open_bin: %d\n", teste);
 	
     return 0;
 }

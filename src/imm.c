@@ -69,30 +69,49 @@ int call_proc(int flag, int argcn, char *argval[]){
 }
 
 int open_txt(char *filepath){
-
-    img *p_img = NULL;
     FILE *image = NULL;
 
     image = fopen(filepath, "r"); // abre o arquivo de imagem
-    if(image == NULL) return INVALID_ARGUMENT;
+    if(image == NULL){
+        return INVALID_ARGUMENT;
+    }
 
-    int rows = 0;
-    int columns = 0;
+    char c;
 
-    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+    while (!feof(image)) {
+        c = fgetc(image);
 
-    p_img = create_img(rows, columns); // aloca espaco da imagem na memoria (!!!!ROWS E COLUMNS INVERTIDO!!!)
-    read_txt(p_img, image); // coloca os pixels na memoria (em bin)
+        if (c != EOF) 
+            printf("%c", c);
+    }
 
     fclose(image); // fecha o arquivo
-
-    img_print(p_img); // exibe os pixels;
-    free_img(p_img); // libera a imagem da memoria
 
     return SUCCESS;
 }
 
 int open_bin(char *filepath){
+    FILE *image = NULL;
+
+    image = fopen(filepath, "rb"); // abre o arquivo de imagem
+    if(image == NULL){
+        return INVALID_ARGUMENT;
+    }
+
+    int inteiro, largura, altura;
+    
+    fread(&largura, sizeof(int), 1, image);
+    fread(&altura, sizeof(int), 1, image);
+
+    for(int i = 0; i < altura; i++) {
+        for(int j = 0; j < largura; j++) {
+            fread(&inteiro, sizeof(int), 1, image);
+            printf("%d ", inteiro);
+        }
+        printf("\n");
+    }
+
+    fclose(image); // fecha o arquivo
 
     return SUCCESS;
 }
@@ -109,7 +128,7 @@ int convert(char *filepath, char *resultfile){
     int columns = 0;
 
     nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
-    p_img = create_img(rows, columns); // aloca o espaco da imagem na memoria
+    p_img = create_img(columns, rows); // aloca o espaco da imagem na memoria
     read_txt(p_img, image); // coloca os pixels na memoria (já em bin)
 
     fclose(image); // fecha o arquivo .txt
