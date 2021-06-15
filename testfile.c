@@ -321,6 +321,81 @@ int open_bin(char *filepath){
     return SUCCESS;
 }
 
+int img_thr(img *p_img, int thr){
+
+    int pos = 0;
+
+    for(int i = 0; i < p_img->height; i++){
+        for(int j = 0; j < p_img->width; j++){
+            pos = i * p_img -> width + j;
+
+            if(p_img->data[pos] > thr){
+                p_img->data[pos] = 1;
+            }else{
+                p_img->data[pos] = 0;
+            }
+        }
+    }
+
+    return SUCCESS;
+}
+
+img *read_bin(FILE *fp){
+
+    int largura = 0;
+    int altura= 0;
+    int pixel = 0;
+    img *img = NULL;
+
+    fread(&largura, sizeof(int), 1, fp);
+    fread(&altura, sizeof(int), 1, fp);
+
+    img = create_img(largura, altura);
+    if(img == NULL) return NULL;
+
+	for(int i = 0; i < img->height; i++){
+		for(int j = 0; j < img->width; j++){
+            fread(&pixel, sizeof(int), 1, fp);
+			set_pxl(img, i, j, pixel);	
+		}
+	}
+
+    rewind(fp);
+    return img;
+}
+
+int segment(char *thr, char *filepath, char *resultfile){
+    int thr_int = 0;
+    int largura = 0;
+    int altura = 0;
+
+    sscanf(thr, "%d", &thr_int); // pega o valor do thr passado por argumento
+
+    FILE *fp = NULL;
+    img *p_img = NULL;
+
+    fp = fopen(filepath, "rb");
+    if(fp == NULL) return INVALID_NULL_POINTER;
+
+    p_img = read_bin(fp);
+    if(p_img == NULL) return INVALID_NULL_POINTER;
+
+    fread(&largura, sizeof(int), 1, fp);
+    fread(&altura, sizeof(int), 1, fp);
+    rewind(fp);
+
+    fclose(fp);
+
+    fp = fopen(resultfile, "wb");
+
+    img_thr(p_img, thr_int);
+    write_bin(p_img, fp, largura, altura);
+    
+    fclose(fp);
+
+    return SUCCESS;
+}
+
 int main(int argc, char *argv[]){
     int teste = 0;
     // TESTE DO TAD IMAGEM
@@ -389,6 +464,11 @@ int main(int argc, char *argv[]){
     // TESTE DO OPEN_BIN
     teste = open_bin(argv[1]);
     printf("\nteste de open_bin: %d\n", teste);
+	// FIM TESTE DO OPEN_BIN
+
+    // TESTE DO SEGMENT
+    // teste = segment(argv[2], argv[3], argv[4]);
+    // printf("\nteste de segment: %d\n", teste);
 	// FIM TESTE DO OPEN_BIN
 
     return 0;
