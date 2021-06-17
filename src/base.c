@@ -19,6 +19,14 @@ for i = 1 ate nlinhas - 1 {
                 // busca o próximo ponto da lista
                 p_atual = pop(lista_proximos);
 
+                /* 
+                    Ponto lista_de_pontos[] = {{0,1},{1,0},{-1,0},{0,-1}};
+
+                    p.x = p_atual.x + lista_de_pontos[i].x;
+                    p.y = p_atual.y + lista_de_pontos[i].y;
+                */
+
+
                 for(int i = 1; i < 5; i++) {
                     switch (i) {
                         // buscando por pixels na vizinhança do ponto atual que são iguais a 1
