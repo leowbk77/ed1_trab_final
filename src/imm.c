@@ -198,7 +198,9 @@ int segment(char *thr, char *filepath, char *resultfile){
 
     img_thr(p_img, thr_int); // faz o thresholding da imagem
     write_bin(p_img, fp, largura, altura); // escreve o novo arquivo
-    fclose(fp);
+
+    fclose(fp); // fecha o arquivo
+    free_img(p_img); // libera a imagem da memoria
 
     return SUCCESS;
 }
