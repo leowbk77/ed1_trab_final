@@ -18,7 +18,7 @@ img *create_img(int w, int h){
         p_img->width = w;
         p_img->height = h;
 
-        p_img->data = malloc((w*h)*(sizeof(int)));
+        p_img->data = calloc(w*h, sizeof(int)); //malloc((w*h)*(sizeof(int)));
         if(p_img->data == NULL){
             free(p_img);
             p_img = NULL; 
