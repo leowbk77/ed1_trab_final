@@ -70,6 +70,14 @@ int call_proc(int flag, int argcn, char *argval[]){
 
         case CC:
 
+            if (argcn != 4) return INVALID_ARG_COUNT; 
+
+            // ambos os arquivos devem ser .imm
+            if (file_type(argval[2]) == BINARY && (file_type(argval[3]) == BINARY)) {
+                //retorna a execução da função
+            } else {
+                return INVALID_ARGUMENT;
+            }
             //funcao que detecta os componentes conexos
             printf("comando: cc");
             break;
@@ -202,5 +210,35 @@ int segment(char *thr, char *filepath, char *resultfile){
     fclose(fp); // fecha o arquivo
     free_img(p_img); // libera a imagem da memoria
 
+    return SUCCESS;
+}
+
+// to do
+int cc(char *filepath, char *resultfile) {
+    int largura = 0;
+    int altura = 0;
+
+    FILE *fp = NULL;
+    img *p_img = NULL;
+
+    fp = fopen(filepath, "rb"); // abre o arquivo binário
+    if (fp == NULL) return INVALID_NULL_POINTER;
+
+    p_img = read_bin(fp); // armazena do arquivo para a memória
+    if(p_img == NULL) {
+        return INVALID_NULL_POINTER;
+    }
+
+    resolution(p_img, &largura, &altura); //pegando as dimensões da imagem
+    fclose(fp);
+
+    fp = fopen(resultfile, "wb"); // abre um novo arquivo binário 
+
+    img_rotule(p_img); // rotula a imagem path
+    write_bin(p_img, fp, largura, altura); // escreve no arquivo a path rotulada
+
+    fclose(fp); // fecha o arquivo
+    free_img(p_img); // libera o espaço de memória da imagem
+    
     return SUCCESS;
 }

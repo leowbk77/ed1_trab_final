@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Timg.h"
+#include "../Tlist/Tlist.h"
 
 struct matrice_data
 {
@@ -169,4 +170,8 @@ int resolution(img *p_img, int *width, int *height){
     *height = p_img->height;
     
     return SUCCESS;
+}
+
+int img_rotule(img *p_img) {
+    // to do
 }

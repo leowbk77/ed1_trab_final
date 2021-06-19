@@ -51,4 +51,7 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn);
 // funcao que retorna a largura e altura da imagem
 int resolution(img *p_img, int *width, int *height);
 
+// funcao que rotula a imagem passada no parametro
+int img_rotule(img *p_img);
+
 #endif
