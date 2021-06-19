@@ -74,7 +74,7 @@ int call_proc(int flag, int argcn, char *argval[]){
 
             // ambos os arquivos devem ser .imm
             if (file_type(argval[2]) == BINARY && (file_type(argval[3]) == BINARY)) {
-                //retorna a execução da função
+                return cc(argval[2], argval[3]); // rotula a imagem
             } else {
                 return INVALID_ARGUMENT;
             }
