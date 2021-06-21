@@ -15,28 +15,40 @@ int file_type(char *file){
 }
 
 int start_proc(int argcn, char *argval[]){
-    if(argcn < 3 || argcn > 5) {
-        printf("Número de argumentos incorreto\n");
+    if(argcn < 3 || argcn > 5) { // verificacao inicial se o numero de argumentos é válido
+        printf("-5: Número de argumentos incorreto\n");
         return INVALID_ARG_COUNT;
     }
-
+    
+    // chama a funcao a ser executada de acordo com o comando passado
     return call_proc(read_arg(argval[1]), argcn, argval);
 }
 
 int read_arg(char *argval){
-    char *valid[5] = {"-open\0","-convert\0","-segment\0","-cc\0","-lab\0"};
+    char *valid[5] = {"-open\0","-convert\0","-segment\0","-cc\0","-lab\0"}; // lista de comandos válidos
 
     int indc = 0;
-    int flag = -1; // flag inicia em -1; evita tentar dar open sempre; retorna INVALID_ARGUMENT
+    int flag = -1; // flag inicia em -1; evita tentar dar open sempre; retorna INVALID_ARGUMENT na call_proc()
 
+    // laço de comparacao da string (argv[1]) com os comandos existentes; seta a flag ao encontrar um comando válido
     while((indc < 5) && (flag == -1)){
         if(!(strcmp(argval, valid[indc]))){
             flag = indc;
         }
         indc++;
     }
-    return flag; // retornar a flag
+    return flag; // retorna a flag
 }
+
+/*  Formato de entrada (*argv[])
+    ./programa  arg1 arg2 arg3 arg4
+        [0]     [1]  [2]   [3]  [4]
+    [0] - caminho de excucao do executavel.
+    [1] - arg1: comandos válidos do programa.
+    [2] - arg2: caminho de arquivo de entrada (open, convert, cc, lab); argumento de thr (segment).
+    [3] - arg3: caminho de arquivo de saída (convert, cc, lab); caminho de arquivo de entrada (segmnet).
+    [4] - arg4: caminho de arquivo de saída (segment).
+*/
 
 int call_proc(int flag, int argcn, char *argval[]){
 
@@ -44,14 +56,14 @@ int call_proc(int flag, int argcn, char *argval[]){
         case OPEN:
 
             if(argcn != 3) return INVALID_ARG_COUNT;
-            return open(file_type(argval[2]), argval[2]);
+            return open(file_type(argval[2]), argval[2]); // exibe a imagem de acordo com o file_type
             break;
 
         case CONVERT:
 
             if(argcn != 4) return INVALID_ARG_COUNT;
             // primeiro argumento [2] : txt && segundo argumento [3] : bin 
-            if((file_type(argval[2]) == 1) && (file_type(argval[3]) == 0)){
+            if((file_type(argval[2]) == TEXT) && (file_type(argval[3]) == BINARY)){
                 return convert(argval[2], argval[3]); // converte .txt para bin
             }else{
                 return INVALID_ARGUMENT;
@@ -62,7 +74,7 @@ int call_proc(int flag, int argcn, char *argval[]){
 
             if(argcn != 5) return INVALID_ARG_COUNT;
             // arquivo de entrada [3] : bin
-            if(file_type(argval[3]) == 0){
+            if(file_type(argval[3]) == BINARY){
                 return segment(argval[2], argval[3], argval[4]); // limiariza a imagem
             }else{
                 return INVALID_ARGUMENT;
@@ -94,11 +106,10 @@ int call_proc(int flag, int argcn, char *argval[]){
             break;
 
         default:
-        
+            // flag retornada não é um comando válido
             printf("-6: Comando não encontrado.\n");
             return INVALID_ARGUMENT;
     }
-    return SUCCESS; // temporario para testes
 }
 
 int open(int filetype, char *filepath){
@@ -115,13 +126,13 @@ int open(int filetype, char *filepath){
 int open_txt(char *filepath){
     FILE *image = NULL;
 
-    image = fopen(filepath, "r"); // abre o arquivo de imagem
+    image = fopen(filepath, "r"); // abre o arquivo de imagem .txt
     if(image == NULL){
         return INVALID_ARGUMENT;
     }
 
     char c;
-
+    // le os valores e printa em sequencia
     while (!feof(image)) {
         c = fgetc(image);
 
@@ -136,7 +147,7 @@ int open_txt(char *filepath){
 int open_bin(char *filepath){
     FILE *image = NULL;
 
-    image = fopen(filepath, "rb"); // abre o arquivo de imagem
+    image = fopen(filepath, "rb"); // abre o arquivo de imagem binária .imm
     if(image == NULL){
         return INVALID_ARGUMENT;
     }
@@ -145,8 +156,8 @@ int open_bin(char *filepath){
     
     fread(&largura, sizeof(int), 1, image); // pega os valores de largura e altura
     fread(&altura, sizeof(int), 1, image);
-
-    for(int i = 0; i < altura; i++) {
+    // le os valores e printa em sequencia
+    for(int i = 0; i < altura; i++) { 
         for(int j = 0; j < largura; j++) {
             fread(&inteiro, sizeof(int), 1, image);
             printf("%d ", inteiro);
@@ -169,7 +180,7 @@ int convert(char *filepath, char *resultfile){
     int rows = 0;
     int columns = 0;
 
-    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas
+    nrow_ncol(image, &rows, &columns); // descobre quantas linhas/colunas do arquivo .txt ('\n' e ' ')
     p_img = create_img(columns, rows); // aloca o espaco da imagem na memoria
     read_txt(p_img, image); // coloca os pixels na memoria (já em bin)
 
@@ -181,7 +192,6 @@ int convert(char *filepath, char *resultfile){
     write_bin(p_img, image, columns, rows); // coloca os pixels na memoria para o arquivo
 
     fclose(image); // fecha o arquivo
-
     free_img(p_img); // libera a memoria ocupada
 
     return SUCCESS;
@@ -192,7 +202,7 @@ int segment(char *thr, char *filepath, char *resultfile){
     int largura = 0;
     int altura = 0;
 
-    sscanf(thr, "%d", &thr_int); // pega o valor do thr passado por argumento
+    sscanf(thr, "%d", &thr_int); // pega o valor do thr passado por argumento (char -> int)
 
     FILE *fp = NULL; 
     img *p_img = NULL;

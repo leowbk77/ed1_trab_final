@@ -41,11 +41,11 @@ int start_proc(int argcn, char *argval[]);
 // verifica qual argumento foi passado e retorna a flag correspondente de acordo com a tabela de indices
 int read_arg(char *argval);
 
-// funcao que chama as funcoes de arcordo com a flag
+// funcao que chama as funcoes de acordo com a flag retornada pela read_arg
 int call_proc(int flag, int argcn, char *argval[]);
 
-// funcoes de abertura do arquivo
-// funcao de abertura
+// funcoes de visualizacao dos arquivos
+// faz a chamada das funcoes de acordo com o tipo de arquivo
 int open(int filetype, char *filepath);
 // exibe a imagem em formato .txt
 int open_txt(char *filepath);
@@ -58,7 +58,7 @@ int convert(char *filepath, char *resultfile);
 // faz a limiarização da imagem
 int segment(char *thr, char *filepath, char *resultfile);
 
-// faz a rotulação da imagem
+// faz a rotulação de componentes conexos da imagem
 int cc(char *filepath, char *resultfile);
 
 #endif

@@ -19,7 +19,7 @@ img *create_img(int w, int h){
         p_img->width = w;
         p_img->height = h;
 
-        p_img->data = calloc(w*h, sizeof(int)); //malloc((w*h)*(sizeof(int)));
+        p_img->data = calloc(w*h, sizeof(int)); 
         if(p_img->data == NULL){
             free(p_img);
             p_img = NULL; 
@@ -115,9 +115,12 @@ int write_bin(img *img, FILE *fp, int width, int height){
 }
 
 /* ARQUIVO BIN (.IMM)
-    4 BYTES (INT)
-    4 BYTES (INT)
-    IMG->DATA (W*H * INT)
+                                |========|
+    4 BYTES (INT)               |largura |
+    4 BYTES (INT)               |altura  |
+                                |--------|
+    IMG->DATA (W*H * INT)       |pixels  |
+                                |========|
 */
 
 img *read_bin(FILE *fp){

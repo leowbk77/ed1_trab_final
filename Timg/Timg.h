@@ -48,7 +48,7 @@ int write_bin(img *img, FILE *fp, int width, int height);
 // funcao que retorno o numero de linhas e colunas de uma imagem txt
 int nrow_ncol(FILE *fp, int *nrow, int *ncolumn);
 
-// funcao que retorna a largura e altura da imagem
+// funcao que retorna a largura e altura da imagem armazenada na memoria
 int resolution(img *p_img, int *width, int *height);
 
 // funcao que rotula a imagem passada no parametro
