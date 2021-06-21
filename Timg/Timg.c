@@ -84,7 +84,7 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn) {
     }
     
     *nrow = ++row;
-    *ncolumn = col; // em alguns casos necessario ser ++col (corrigir)
+    *ncolumn = ++col;
 
     rewind(fp);
     return SUCCESS;
@@ -131,7 +131,7 @@ img *read_bin(FILE *fp){
     fread(&altura, sizeof(int), 1, fp);
 
     img = create_img(largura, altura);
-    if(img == NULL) return OUT_OF_MEMORY;
+    if(img == NULL) return NULL;
 
 	for(int i = 0; i < img->height; i++){
 		for(int j = 0; j < img->width; j++){
@@ -172,6 +172,62 @@ int resolution(img *p_img, int *width, int *height){
     return SUCCESS;
 }
 
-int img_rotule(img *p_img) {
-    // to do
+int img_rotule(img *p_img, char *filepath) {
+    if (p_img == NULL) return INVALID_NULL_POINTER;
+
+    img *im_rot;
+    im_rot = create_img(p_img -> width, p_img -> height);
+    if (im_rot == NULL) return INVALID_NULL_POINTER;
+
+    int label = 1;
+    list *li;
+    li = list_create();
+    ponto p, p_atual;
+    ponto lista_de_pontos[] = {{0,-1},{0,1},{-1,0},{1,0}};
+
+    int pixel_im;
+    int pixel_im_rot;
+
+    for(int i = 1; i < p_img -> height - 1; i++) {
+        for(int j = 1; j < p_img -> width - 1; j++) {
+            p.x = i;
+            p.y = j;
+
+            get_pxl(p_img, p.x, p.y, &pixel_im);
+            get_pxl(im_rot, p.x, p.y, &pixel_im_rot);
+
+            if (pixel_im == 1 && pixel_im_rot == 0) {
+                set_pxl(im_rot, p.x, p.y, label);
+
+                push(li, p);
+
+                while(!is_empty(li)) {
+                    pop(li, &p_atual);
+
+                    for(int i = 0; i < 4; i++) {
+                        p.x = p_atual.x + lista_de_pontos[i].x;
+                        p.y = p_atual.y + lista_de_pontos[i].y;
+
+                        get_pxl(p_img, p.x, p.y, &pixel_im);
+                        get_pxl(im_rot, p.x, p.y, &pixel_im_rot);
+
+                        if (pixel_im == 1 && pixel_im_rot == 0) {
+                            set_pxl(im_rot, p.x, p.y, label);
+
+                            push(li, p);
+                        }
+                    }   
+                }
+                label++;
+            }
+        }
+    }
+    FILE *fp;
+    fp = fopen(filepath, "wb");
+    write_bin(im_rot, fp, p_img -> width, p_img -> height); // escreve no arquivo a path rotulada
+    fclose(fp);
+
+    list_free(li);
+    free_img(im_rot);
+    return SUCCESS;
 }

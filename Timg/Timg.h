@@ -52,6 +52,6 @@ int nrow_ncol(FILE *fp, int *nrow, int *ncolumn);
 int resolution(img *p_img, int *width, int *height);
 
 // funcao que rotula a imagem passada no parametro
-int img_rotule(img *p_img);
+int img_rotule(img *p_img, char *filepath);
 
 #endif

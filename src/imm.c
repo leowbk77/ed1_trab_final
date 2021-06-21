@@ -4,9 +4,7 @@
 #include "imm.h"
 #include "../Timg/Timg.h"
 
-
 int file_type(char *file){
-    
     int file_ext = strlen(file) - 3;
 
     if(!(strcmp(&file[file_ext], "imm"))){
@@ -17,7 +15,10 @@ int file_type(char *file){
 }
 
 int start_proc(int argcn, char *argval[]){
-    if(argcn < 3 || argcn > 5) return INVALID_ARGUMENT;
+    if(argcn < 3 || argcn > 5) {
+        printf("Número de argumentos incorreto\n");
+        return INVALID_ARG_COUNT;
+    }
 
     return call_proc(read_arg(argval[1]), argcn, argval);
 }
@@ -78,14 +79,18 @@ int call_proc(int flag, int argcn, char *argval[]){
             } else {
                 return INVALID_ARGUMENT;
             }
-            //funcao que detecta os componentes conexos
-            printf("comando: cc");
             break;
 
         case LAB:
 
-            //funcao que mostra o caminho no labirinto
-            printf("comando: lab");
+            if (argcn != 4) return INVALID_ARG_COUNT; 
+
+            // ambos os arquivos devem ser .imm
+            if (file_type(argval[2]) == BINARY && (file_type(argval[3]) == BINARY)) {
+                return lab(argval[2], argval[3]); // descobre o caminho do labirinto
+            } else {
+                return INVALID_ARGUMENT;
+            }
             break;
 
         default:
@@ -213,7 +218,6 @@ int segment(char *thr, char *filepath, char *resultfile){
     return SUCCESS;
 }
 
-// to do
 int cc(char *filepath, char *resultfile) {
     int largura = 0;
     int altura = 0;
@@ -222,23 +226,23 @@ int cc(char *filepath, char *resultfile) {
     img *p_img = NULL;
 
     fp = fopen(filepath, "rb"); // abre o arquivo binário
-    if (fp == NULL) return INVALID_NULL_POINTER;
+    if (fp == NULL) return INVALID_ARGUMENT;
 
     p_img = read_bin(fp); // armazena do arquivo para a memória
     if(p_img == NULL) {
-        return INVALID_NULL_POINTER;
+        return OUT_OF_MEMORY;
     }
 
     resolution(p_img, &largura, &altura); //pegando as dimensões da imagem
     fclose(fp);
 
-    fp = fopen(resultfile, "wb"); // abre um novo arquivo binário 
+    img_rotule(p_img, resultfile); // rotula a imagem do arq path e escreve no arq result
 
-    img_rotule(p_img); // rotula a imagem path
-    write_bin(p_img, fp, largura, altura); // escreve no arquivo a path rotulada
-
-    fclose(fp); // fecha o arquivo
     free_img(p_img); // libera o espaço de memória da imagem
-    
     return SUCCESS;
+}
+
+int main(int argc, char *argv[]) {
+    start_proc(argc, argv);
+    return 0;
 }
