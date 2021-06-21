@@ -229,9 +229,6 @@ int segment(char *thr, char *filepath, char *resultfile){
 }
 
 int cc(char *filepath, char *resultfile) {
-    int largura = 0;
-    int altura = 0;
-
     FILE *fp = NULL;
     img *p_img = NULL;
 
@@ -243,12 +240,12 @@ int cc(char *filepath, char *resultfile) {
         return OUT_OF_MEMORY;
     }
 
-    resolution(p_img, &largura, &altura); //pegando as dimensões da imagem
-    fclose(fp);
+    fclose(fp); // fecha o arquivo binario
 
     img_rotule(p_img, resultfile); // rotula a imagem do arq path e escreve no arq result
 
     free_img(p_img); // libera o espaço de memória da imagem
+
     return SUCCESS;
 }
 
