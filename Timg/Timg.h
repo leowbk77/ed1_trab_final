@@ -57,4 +57,7 @@ int img_rotule(img *p_img, char *filepath);
 // funcao que encontra o caminho correto do labirinto e escreve no filepath 
 int find_route(img *p_img, char *filepath);
 
+// limpa a imagem apos encontrarmos o caminho
+int limpar_imagem_lab(img *p_img);
+
 #endif

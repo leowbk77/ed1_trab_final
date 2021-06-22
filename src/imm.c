@@ -97,8 +97,8 @@ int call_proc(int flag, int argcn, char *argval[]){
 
             if (argcn != 4) return INVALID_ARG_COUNT; 
 
-            // ambos os arquivos devem ser .imm
-            if (file_type(argval[2]) == BINARY && file_type(argval[3]) == BINARY) {
+            // verificando se arquivo de entrada é bin/txt e o de saída é bin
+            if ((file_type(argval[2]) == BINARY) || (file_type(argval[2]) == TEXT) && file_type(argval[3]) == BINARY) {
                 return lab(argval[2], argval[3]); // descobre o caminho do labirinto
             } else {
                 return INVALID_ARGUMENT;
@@ -254,15 +254,37 @@ int lab(char *filepath, char *resultfile) {
     FILE *fp = NULL;
     img *p_img = NULL;
 
-    fp = fopen(filepath, "rb"); // abre o arquivo binário
-    if (fp == NULL) return INVALID_ARGUMENT;
+    int tipo_arquivo = file_type(filepath); // 1 = texto, 0 = binário, -1 = inválido 
+    if (tipo_arquivo == INVALID_FORMAT) return INVALID_FORMAT;
 
-    p_img = read_bin(fp); // armazena do arquivo para a memória
-    if(p_img == NULL) {
-        return OUT_OF_MEMORY;
+    if (tipo_arquivo == BINARY) {
+        fp = fopen(filepath, "rb"); // abre o arquivo binário
+        if (fp == NULL) return INVALID_ARGUMENT;
+
+        p_img = read_bin(fp); // armazena do arquivo para a memória
+        if(p_img == NULL) {
+            return OUT_OF_MEMORY;
+        }
+    } 
+
+    if (tipo_arquivo == TEXT) {
+        fp = fopen(filepath, "r"); // abre arquivo txt
+        if (fp == NULL) return INVALID_ARGUMENT;
+
+        int larg, alt;
+
+        nrow_ncol(fp, &alt, &larg);
+
+        p_img = create_img(larg, alt);
+
+        read_txt(p_img, fp); 
+
+        if(p_img == NULL) {
+            return OUT_OF_MEMORY;
+        }
     }
 
-    fclose(fp); // fecha o arquivo binario
+    fclose(fp); // fecha o arquivo lido para armazenar a imagem
 
     find_route(p_img, resultfile); // encontra o caminho correto do labirinto
 

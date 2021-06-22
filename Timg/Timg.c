@@ -320,11 +320,31 @@ int find_route(img *p_img, char *filepath) {
        set_pxl(p_img, p_atual.y, p_atual.x, 2);
     }
 
+    limpar_imagem_lab(p_img); // limpando "rabiscos" usados para encontrar o caminho correto
+
     FILE *fp;
     fp = fopen(filepath, "wb");
     write_bin(p_img, fp, largura, altura); // escreve no arquivo a path rotulada
     fclose(fp);
 
     list_free(li);
+    return SUCCESS;
+}
+
+int limpar_imagem_lab(img *p_img) {
+    if (p_img == NULL) return INVALID_NULL_POINTER;
+
+    int pxl;
+
+    for(int i = 0; i < p_img -> height; i++) {
+        for(int j = 0; j < p_img -> width; j++) {
+            get_pxl(p_img, i, j, &pxl);
+
+            if (pxl == 3) {
+                set_pxl(p_img, i, j, 1);
+            }
+        }
+    }
+
     return SUCCESS;
 }
