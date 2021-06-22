@@ -275,6 +275,7 @@ int find_route(img *p_img, char *filepath) {
     p.y = p_inicial.y;
 
     set_pxl(p_img, p_inicial.y, p_inicial.x, 2);
+    set_pxl(p_img, p.y, p.x, 2); // seta o em 2 o proximo do primeiro
 
     push(li, p);
 
@@ -292,14 +293,18 @@ int find_route(img *p_img, char *filepath) {
             if (pixel == 1) {
                 push(li, p);
                 set_pxl(p_img, p.y, p.x, 3);
+                i = 0; // reseta o contador (p se moveu para o prox pixel) | solucao?
             } else {
                 p = p_atual;
             }
         }   
+    
 
+        /* IF ERRADO - revisionar e refazer
         if (p.x != p_final.x && p.y != p_final.y) {
             pop(li, &p);
         } 
+        */
 
         if (p.x == p_final.x && p.y == p_final.y) {
             break;
