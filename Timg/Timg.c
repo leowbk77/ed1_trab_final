@@ -283,7 +283,7 @@ int find_route(img *p_img, char *filepath) {
     push(li, p);
 
     while (1) {
-        // printf("\n---------\nColuna/Linha(%d, %d)\n", p.x, p.y);
+        printf("\n---------\nColuna/Linha(%d, %d)\n", p.x, p.y);
         p_atual = p;
 
         for(int i = 0; i < 4; i++) {
@@ -292,12 +292,12 @@ int find_route(img *p_img, char *filepath) {
             p.y = p_atual.y + lista_de_pontos[i].y;
 
             get_pxl(p_img, p.y, p.x, &pixel);
-            // printf("Coluna/Linha(%d, %d): pixel: %d\n", p.x, p.y,pixel);
+            printf("Coluna/Linha(%d, %d): pixel: %d\n", p.x, p.y,pixel);
 
             if (pixel == 1) {
                 push(li, p);
                 set_pxl(p_img, p.y, p.x, 3);
-                i = 0; // reseta o contador (p se moveu para o prox pixel) | solucao?
+                i = -1; // reseta o contador (p se moveu para o prox pixel) | solucao?
                 p_atual = p; // evita voltar pro comeco
                 unv_side = 0; // lados validos 
             } else {
@@ -309,27 +309,20 @@ int find_route(img *p_img, char *filepath) {
         if (p.x == p_final.x && p.y == p_final.y) {
                 break;
         }
-
+        
         if(unv_side == 4){ // pop na lista até o ultimo "cruzamento"
-                pop(li, &p);
                 pop(li, &p);
                 unv_side = 0;
         }
-
-        /* IF ERRADO - revisionar e refazer
-        if (p.x != p_final.x && p.y != p_final.y) {
-            pop(li, &p);
-        } 
-        */
-        
     }
     printf("Coluna/Linha(%d, %d)\n", p.x, p.y);
 
     // linha comentada para teste
-    //while (!is_empty(li)) { 
-    //    pop(li, &p_atual);
-    //    set_pxl(p_img, p_atual.y, p_atual.x, 2);
-    //}
+    list_print(li);
+    while (!is_empty(li)) { 
+       pop(li, &p_atual);
+       set_pxl(p_img, p_atual.y, p_atual.x, 2);
+    }
 
     FILE *fp;
     fp = fopen(filepath, "wb");

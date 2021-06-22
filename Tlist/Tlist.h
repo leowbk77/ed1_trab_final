@@ -33,4 +33,6 @@ int pop(list *list, ponto *p);
 
 int is_empty(list *list);
 
+int list_print(list *list);
+
 #endif

@@ -1,5 +1,6 @@
 #include "Tlist.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct list_node node;
 
@@ -116,4 +117,24 @@ int is_empty(list *list) {
     } else {
         return 0; // se não estiver vazia, retorna 0:false
     }
+}
+
+int list_print(list *list) {
+    if (list == NULL) return INVALID_NULL_POINTER;
+
+    int pos = 1;
+
+    node *aux;
+    aux = list -> head;
+
+    while (aux != list -> end) {
+        printf("Posição %d: (%d, %d)\n", pos, aux -> p.x
+        , aux -> p.y);
+        pos++;
+        aux = aux -> next;
+    }
+
+    printf("Posição %d: (%d, %d)\n", pos, aux -> p.x, aux -> p.y); //printando list -> end
+
+    return SUCCESS;
 }
