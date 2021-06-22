@@ -269,6 +269,7 @@ int find_route(img *p_img, char *filepath) {
         }
     }
 
+    printf("\nPinicial(%d, %d)\n", p_inicial.x, p_inicial.y);
     printf("\nPfinal(%d, %d)\n", p_final.x, p_final.y);
 
     p.x = 1;
@@ -277,6 +278,8 @@ int find_route(img *p_img, char *filepath) {
     set_pxl(p_img, p_inicial.y, p_inicial.x, 2);
     set_pxl(p_img, p.y, p.x, 2); // seta o em 2 o proximo do primeiro
 
+    int unv_side = 0; // contador de lados validos observados
+
     push(li, p);
 
     while (1) {
@@ -284,6 +287,7 @@ int find_route(img *p_img, char *filepath) {
         p_atual = p;
 
         for(int i = 0; i < 4; i++) {
+
             p.x = p_atual.x + lista_de_pontos[i].x;
             p.y = p_atual.y + lista_de_pontos[i].y;
 
@@ -294,28 +298,38 @@ int find_route(img *p_img, char *filepath) {
                 push(li, p);
                 set_pxl(p_img, p.y, p.x, 3);
                 i = 0; // reseta o contador (p se moveu para o prox pixel) | solucao?
+                p_atual = p; // evita voltar pro comeco
+                unv_side = 0; // lados validos 
             } else {
                 p = p_atual;
+                unv_side++;
             }
         }   
-    
+
+        if (p.x == p_final.x && p.y == p_final.y) {
+                break;
+        }
+
+        if(unv_side == 4){ // pop na lista até o ultimo "cruzamento"
+                pop(li, &p);
+                pop(li, &p);
+                unv_side = 0;
+        }
 
         /* IF ERRADO - revisionar e refazer
         if (p.x != p_final.x && p.y != p_final.y) {
             pop(li, &p);
         } 
         */
-
-        if (p.x == p_final.x && p.y == p_final.y) {
-            break;
-        }
+        
     }
     printf("Coluna/Linha(%d, %d)\n", p.x, p.y);
 
-    while (!is_empty(li)) {
-        pop(li, &p_atual);
-        set_pxl(p_img, p_atual.y, p_atual.x, 2);
-    }
+    // linha comentada para teste
+    //while (!is_empty(li)) { 
+    //    pop(li, &p_atual);
+    //    set_pxl(p_img, p_atual.y, p_atual.x, 2);
+    //}
 
     FILE *fp;
     fp = fopen(filepath, "wb");
