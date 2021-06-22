@@ -138,6 +138,7 @@ int open_txt(char *filepath){
 
         if (c != EOF) printf("%c", c);
     }
+    printf("\n");
 
     fclose(image); // fecha o arquivo
 
