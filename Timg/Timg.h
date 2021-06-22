@@ -54,4 +54,7 @@ int resolution(img *p_img, int *width, int *height);
 // funcao que rotula a imagem passada no parametro
 int img_rotule(img *p_img, char *filepath);
 
+// funcao que encontra o caminho correto do labirinto e escreve no filepath 
+int find_route(img *p_img, char *filepath);
+
 #endif

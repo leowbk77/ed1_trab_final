@@ -234,3 +234,82 @@ int img_rotule(img *p_img, char *filepath) {
     free_img(im_rot);
     return SUCCESS;
 }
+
+int find_route(img *p_img, char *filepath) {
+    if (p_img == NULL) return INVALID_NULL_POINTER;
+
+    int largura = p_img -> width;
+    int altura = p_img -> height;
+
+    list *li;
+    li = list_create();
+    ponto p, p_atual;
+    ponto lista_de_pontos[] = {{0,-1},{0,1},{-1,0},{1,0}};
+    ponto p_inicial, p_final;
+
+    int pixel;
+
+    for(int i = 0; i < altura; i++) {
+        get_pxl(p_img, i, 0, &pixel);
+
+        if (pixel != 0) {
+            p_inicial.x = 0;
+            p_inicial.y = i;
+        }
+    }
+
+    pixel = 0;
+
+    for(int i = 0; i < altura; i++) {
+        get_pxl(p_img, i, largura - 1, &pixel);
+
+        if (pixel != 0) {
+            p_final.x = largura - 1;
+            p_final.y = i;
+        }
+    }
+
+    p.x = 1;
+    p.y = p_inicial.y;
+
+    set_pxl(p_img, p_inicial.y, p_inicial.x, 2);
+
+    push(li, p);
+
+    while (p.x != p_final.x && p.y != p_final.y) {
+        
+        p_atual = p;
+
+        for(int i = 0; i < 4; i++) {
+            p.x = p_atual.x + lista_de_pontos[i].x;
+            p.y = p_atual.y + lista_de_pontos[i].y;
+
+            get_pxl(p_img, p.y, p.x, &pixel);
+
+            if (pixel == 1) {
+                push(li, p);
+                set_pxl(p_img, p.y, p.x, 3);
+            } else {
+                p.x = p_atual.x - lista_de_pontos[i].x;
+                p.y = p_atual.y - lista_de_pontos[i].y;
+            }
+        }   
+
+        if (p.x != p_final.x && p.y != p_final.y) {
+            pop(li, &p);
+        } 
+    }
+
+    while (!is_empty(li)) {
+        pop(li, &p_atual);
+        set_pxl(p_img, p_atual.y, p_atual.x, 2);
+    }
+
+    FILE *fp;
+    fp = fopen(filepath, "wb");
+    write_bin(p_img, fp, largura, altura); // escreve no arquivo a path rotulada
+    fclose(fp);
+
+    list_free(li);
+    return SUCCESS;
+}

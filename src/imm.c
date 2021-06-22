@@ -98,7 +98,7 @@ int call_proc(int flag, int argcn, char *argval[]){
             if (argcn != 4) return INVALID_ARG_COUNT; 
 
             // ambos os arquivos devem ser .imm
-            if (file_type(argval[2]) == BINARY && (file_type(argval[3]) == BINARY)) {
+            if (file_type(argval[2]) == BINARY && file_type(argval[3]) == BINARY) {
                 return lab(argval[2], argval[3]); // descobre o caminho do labirinto
             } else {
                 return INVALID_ARGUMENT;
@@ -243,6 +243,27 @@ int cc(char *filepath, char *resultfile) {
     fclose(fp); // fecha o arquivo binario
 
     img_rotule(p_img, resultfile); // rotula a imagem do arq path e escreve no arq result
+
+    free_img(p_img); // libera o espaço de memória da imagem
+
+    return SUCCESS;
+}
+
+int lab(char *filepath, char *resultfile) {
+    FILE *fp = NULL;
+    img *p_img = NULL;
+
+    fp = fopen(filepath, "rb"); // abre o arquivo binário
+    if (fp == NULL) return INVALID_ARGUMENT;
+
+    p_img = read_bin(fp); // armazena do arquivo para a memória
+    if(p_img == NULL) {
+        return OUT_OF_MEMORY;
+    }
+
+    fclose(fp); // fecha o arquivo binario
+
+    find_route(p_img, resultfile); // encontra o caminho correto do labirinto
 
     free_img(p_img); // libera o espaço de memória da imagem
 

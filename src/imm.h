@@ -61,4 +61,7 @@ int segment(char *thr, char *filepath, char *resultfile);
 // faz a rotulação de componentes conexos da imagem
 int cc(char *filepath, char *resultfile);
 
+// função que encontra o caminho do labirinto
+int lab(char *filepath, char *resultfile);
+
 #endif
