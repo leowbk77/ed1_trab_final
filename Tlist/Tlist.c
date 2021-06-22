@@ -119,6 +119,20 @@ int is_empty(list *list) {
     }
 }
 
+int list_insert_front(list *list, ponto p) {
+    if (list == NULL) return INVALID_NULL_POINTER;
+
+    node *node_data;
+    node_data = malloc(sizeof(node_data));
+    if (node_data == NULL) return OUT_OF_MEMORY;
+
+    node_data -> p = p;
+    node_data -> next = list -> head;
+    list -> head = node_data;
+
+    return SUCCESS;
+}
+
 int list_print(list *list) {
     if (list == NULL) return INVALID_NULL_POINTER;
 

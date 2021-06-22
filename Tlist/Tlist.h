@@ -33,6 +33,8 @@ int pop(list *list, ponto *p);
 
 int is_empty(list *list);
 
+int list_insert_front(list *list, ponto p);
+
 int list_print(list *list);
 
 #endif

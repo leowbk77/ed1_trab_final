@@ -243,13 +243,13 @@ int find_route(img *p_img, char *filepath) {
 
     list *li;
     li = list_create();
-    ponto p, p_atual;
-    ponto lista_de_pontos[] = {{0,-1},{0,1},{-1,0},{1,0}};
-    ponto p_inicial, p_final;
+    ponto p, p_atual; // para percorrer os vizinhos
+    ponto lista_de_pontos[] = {{0,-1},{0,1},{-1,0},{1,0}}; // cordenadas dos vizinhos
+    ponto p_inicial, p_final; // ponto inicial do labirinto e ponto final do labirinto
 
     int pixel;
 
-    for(int i = 0; i < altura; i++) {
+    for(int i = 0; i < altura; i++) {   // pegando o ponto inicial do labirinto
         get_pxl(p_img, i, 0, &pixel);
 
         if (pixel != 0) {
@@ -260,7 +260,7 @@ int find_route(img *p_img, char *filepath) {
 
     pixel = 0;
 
-    for(int i = 0; i < altura; i++) {
+    for(int i = 0; i < altura; i++) {   // pegando o ponto final do labirinto
         get_pxl(p_img, i, largura - 1, &pixel);
 
         if (pixel != 0) {
@@ -269,21 +269,16 @@ int find_route(img *p_img, char *filepath) {
         }
     }
 
-    printf("\nPinicial(%d, %d)\n", p_inicial.x, p_inicial.y);
-    printf("\nPfinal(%d, %d)\n", p_final.x, p_final.y);
-
-    p.x = 1;
+    p.x = 1;    // setando o p para o próximo elemento após p ponto inicial
     p.y = p_inicial.y;
 
-    set_pxl(p_img, p_inicial.y, p_inicial.x, 2);
-    set_pxl(p_img, p.y, p.x, 2); // seta o em 2 o proximo do primeiro
+    set_pxl(p_img, p_inicial.y, p_inicial.x, 2); // setando ponto inicial para 2, já que faz parte do caminho
 
     int unv_side = 0; // contador de lados validos observados
 
     push(li, p);
 
     while (1) {
-        printf("\n---------\nColuna/Linha(%d, %d)\n", p.x, p.y);
         p_atual = p;
 
         for(int i = 0; i < 4; i++) {
@@ -292,12 +287,11 @@ int find_route(img *p_img, char *filepath) {
             p.y = p_atual.y + lista_de_pontos[i].y;
 
             get_pxl(p_img, p.y, p.x, &pixel);
-            printf("Coluna/Linha(%d, %d): pixel: %d\n", p.x, p.y,pixel);
 
             if (pixel == 1) {
                 push(li, p);
                 set_pxl(p_img, p.y, p.x, 3);
-                i = -1; // reseta o contador (p se moveu para o prox pixel) | solucao?
+                i = -1; // reseta o contador (p se moveu para o prox pixel)
                 p_atual = p; // evita voltar pro comeco
                 unv_side = 0; // lados validos 
             } else {
@@ -307,18 +301,20 @@ int find_route(img *p_img, char *filepath) {
         }   
 
         if (p.x == p_final.x && p.y == p_final.y) {
-                break;
+            break;
         }
-        
+
         if(unv_side == 4){ // pop na lista até o ultimo "cruzamento"
                 pop(li, &p);
                 unv_side = 0;
         }
     }
-    printf("Coluna/Linha(%d, %d)\n", p.x, p.y);
 
     // linha comentada para teste
-    list_print(li);
+    list_insert_front(li, p_inicial); // inserindo ponto inicial no começo da lista
+
+    list_print(li); // printando lista com o caminho
+
     while (!is_empty(li)) { 
        pop(li, &p_atual);
        set_pxl(p_img, p_atual.y, p_atual.x, 2);
