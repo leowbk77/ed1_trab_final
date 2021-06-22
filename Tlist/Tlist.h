@@ -31,6 +31,8 @@ int push(list *list, ponto p);
 
 int pop(list *list, ponto *p);
 
+int top(list *list, ponto *p);
+
 int is_empty(list *list);
 
 int list_insert_front(list *list, ponto p);

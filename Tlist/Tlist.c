@@ -152,3 +152,15 @@ int list_print(list *list) {
 
     return SUCCESS;
 }
+
+int top(list *list, ponto *p) {
+    if (list == NULL) return INVALID_NULL_POINTER;
+
+    if (is_empty(list)) {
+        return ELEM_NOT_FOUND;
+    }
+
+    *p = (list -> end) -> p;
+
+    return SUCCESS;
+}

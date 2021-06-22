@@ -305,8 +305,9 @@ int find_route(img *p_img, char *filepath) {
         }
 
         if(unv_side == 4){ // pop na lista até o ultimo "cruzamento"
-                pop(li, &p);
-                unv_side = 0;
+            pop(li, &p);
+            top(li, &p);
+            unv_side = 0;
         }
     }
 
