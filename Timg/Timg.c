@@ -269,6 +269,8 @@ int find_route(img *p_img, char *filepath) {
         }
     }
 
+    printf("\nPfinal(%d, %d)\n", p_final.x, p_final.y);
+
     p.x = 1;
     p.y = p_inicial.y;
 
@@ -276,8 +278,8 @@ int find_route(img *p_img, char *filepath) {
 
     push(li, p);
 
-    while (p.x != p_final.x && p.y != p_final.y) {
-        
+    while (1) {
+        // printf("\n---------\nColuna/Linha(%d, %d)\n", p.x, p.y);
         p_atual = p;
 
         for(int i = 0; i < 4; i++) {
@@ -285,20 +287,25 @@ int find_route(img *p_img, char *filepath) {
             p.y = p_atual.y + lista_de_pontos[i].y;
 
             get_pxl(p_img, p.y, p.x, &pixel);
+            // printf("Coluna/Linha(%d, %d): pixel: %d\n", p.x, p.y,pixel);
 
             if (pixel == 1) {
                 push(li, p);
                 set_pxl(p_img, p.y, p.x, 3);
             } else {
-                p.x = p_atual.x - lista_de_pontos[i].x;
-                p.y = p_atual.y - lista_de_pontos[i].y;
+                p = p_atual;
             }
         }   
 
         if (p.x != p_final.x && p.y != p_final.y) {
             pop(li, &p);
         } 
+
+        if (p.x == p_final.x && p.y == p_final.y) {
+            break;
+        }
     }
+    printf("Coluna/Linha(%d, %d)\n", p.x, p.y);
 
     while (!is_empty(li)) {
         pop(li, &p_atual);
